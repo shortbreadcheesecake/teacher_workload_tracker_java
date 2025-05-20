@@ -20,6 +20,11 @@ API-First приложение для учёта выполненной нагр
    ```bash
    mvn spring-boot:run
    ```
+   Если не получилось, то соберите и запустите проект так:
+   ```bash
+   mvn clean package
+   java -jar target\teacher-workload-tracker-0.1.0.jar
+   ```
 3. Откройте в браузере:
    - Веб-интерфейс: http://localhost:8080
    - Swagger UI: http://localhost:8080/swagger-ui.html
