@@ -1,0 +1,6 @@
+ru\example\controller\api\ScheduleEventApiControllerTest.class
+ru\example\TeacherWorkloadTrackerApplicationTests.class
+ru\example\controller\api\WorkloadApiControllerTest.class
+ru\example\controller\api\TeacherApiControllerTest.class
+ru\example\service\WorkloadServiceTest.class
+ru\example\service\TeacherServiceTest.class
