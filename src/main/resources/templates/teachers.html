@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Преподаватели</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>Список преподавателей</h1>
+        <a th:href="@{/teachers/new}" class="btn btn-primary mb-3">Добавить преподавателя</a>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Имя</th>
+                    <th>Отделение</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="teacher : ${teachers}">
+                    <td th:text="${teacher.name}"></td>
+                    <td th:text="${teacher.department}"></td>
+                    <td>
+                        <a th:href="@{/teachers/{id}/workloads(id=${teacher.id})}" class="btn btn-info btn-sm">Нагрузка</a>
+                        <a th:href="@{/schedule/teacher/{id}(id=${teacher.id})}" class="btn btn-success btn-sm">Расписание</a>
+                        <form th:action="@{/teachers/{id}/delete(id=${teacher.id})}" method="post" class="d-inline" onsubmit="return confirm('Вы уверены, что хотите удалить этого преподавателя? Все связанные нагрузки также будут удалены.')">
+                            <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

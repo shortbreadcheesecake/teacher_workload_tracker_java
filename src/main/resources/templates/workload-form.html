@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Нагрузка преподавателя</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>Добавление нагрузки</h1>
+        <form th:action="@{/teachers/{id}/workloads/create(id=${teacher.id})}" method="post" th:object="${workload}">
+            <input type="hidden" th:field="*{id}">
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="position" class="form-label">Должность</label>
+                    <input type="text" class="form-control" id="position" th:field="*{position}" required>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label for="subject" class="form-label">Предметы</label>
+                    <input type="text" class="form-control" id="subject" th:field="*{subject}" required>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="lectureHours" class="form-label">Часы лекций</label>
+                    <input type="number" class="form-control" id="lectureHours" th:field="*{lectureHours}" min="0" value="0">
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label for="seminarHours" class="form-label">Часы семинаров</label>
+                    <input type="number" class="form-control" id="seminarHours" th:field="*{seminarHours}" min="0" value="0">
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label for="labHours" class="form-label">Часы лабораторных работ</label>
+                    <input type="number" class="form-control" id="labHours" th:field="*{labHours}" min="0" value="0">
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="courseWorkHours" class="form-label">Часы курсовых работ</label>
+                    <input type="number" class="form-control" id="courseWorkHours" th:field="*{courseWorkHours}" min="0" value="0">
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label for="examHours" class="form-label">Часы экзаменов</label>
+                    <input type="number" class="form-control" id="examHours" th:field="*{examHours}" min="0" value="0">
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label for="totalHours" class="form-label">Общая нагрузка</label>
+                    <input type="number" class="form-control" id="totalHours" th:field="*{totalHours}" readonly>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="additionalDuties" class="form-label">Дополнительные обязанности</label>
+                <textarea class="form-control" id="additionalDuties" th:field="*{additionalDuties}" rows="2"></textarea>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="semester" class="form-label">Семестр</label>
+                    <select class="form-control" id="semester" th:field="*{semester}">
+                        <option value="Первый">Первый</option>
+                        <option value="Второй">Второй</option>
+                    </select>
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label for="academicYear" class="form-label">Учебный год</label>
+                    <input type="text" class="form-control" id="academicYear" th:field="*{academicYear}" placeholder="2024-2025">
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label for="studentGroup" class="form-label">Учебная группа</label>
+                    <input type="text" class="form-control" id="studentGroup" th:field="*{studentGroup}">
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+                <a th:href="@{/teachers/{id}/workloads(id=${teacher.id})}" class="btn btn-secondary">Отмена</a>
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        // Автоматический подсчет общей нагрузки
+        document.addEventListener('DOMContentLoaded', function() {
+            const hourFields = ['lectureHours', 'seminarHours', 'labHours', 'courseWorkHours', 'examHours'];
+            const totalField = document.getElementById('totalHours');
+            
+            function updateTotal() {
+                let total = 0;
+                hourFields.forEach(field => {
+                    const value = parseInt(document.getElementById(field).value) || 0;
+                    total += value;
+                });
+                totalField.value = total;
+            }
+            
+            hourFields.forEach(field => {
+                document.getElementById(field).addEventListener('input', updateTotal);
+            });
+            
+            // Начальный подсчет
+            updateTotal();
+        });
+    </script>
+</body>
+</html>

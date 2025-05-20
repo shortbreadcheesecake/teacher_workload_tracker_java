@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Профиль преподавателя</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-12">
+                <h2 th:text="${teacher.name}">Имя преподавателя</h2>
+                <p th:text="${teacher.department}">Отдел</p>
+                
+                <div class="mt-4">
+                    <a th:href="@{/teachers/list}" class="btn btn-secondary">Все преподаватели</a>
+                    <a th:href="@{/teachers/{id}/workloads(id=${teacher.id})}" class="btn btn-primary">Нагрузка</a>
+                    <a th:href="@{/schedule/teacher/{id}(id=${teacher.id})}" class="btn btn-info">Расписание</a>
+                    
+                    <form th:action="@{/teachers/{id}/delete(id=${teacher.id})}" method="post" class="d-inline" onsubmit="return confirm('Вы уверены, что хотите удалить этого преподавателя? Все связанные нагрузки также будут удалены.')">
+                        <button type="submit" class="btn btn-danger">Удалить преподавателя</button>
+                    </form>
+                </div>
+
+                <div class="mt-4">
+                    <h3>Информация о преподавателе</h3>
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${teacher.name}">Имя преподавателя</h5>
+                            <p class="card-text">
+                                <strong>Отдел:</strong> <span th:text="${teacher.department}">Отдел</span>
+                            </p>
+                            <p class="card-text">
+                                <strong>Общая нагрузка:</strong> 
+                                <span th:text="${#lists.isEmpty(teacher.workloads) ? '0' : #aggregates.sum(teacher.workloads.![hours])}">0</span> часов
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <h3>Нагрузка</h3>
+                    <table class="table" th:if="${!#lists.isEmpty(teacher.workloads)}">
+                        <thead>
+                            <tr>
+                                <th>Часы</th>
+                                <th>Описание</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="workload : ${teacher.workloads}">
+                                <td th:text="${workload.hours}">0</td>
+                                <td th:text="${workload.description}">Описание</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="alert alert-info" th:if="${#lists.isEmpty(teacher.workloads)}">
+                        У преподавателя пока нет нагрузки.
+                    </div>
+                    <a th:href="@{/teachers/{id}/workloads(id=${teacher.id})}" class="btn btn-primary">Управление нагрузкой</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

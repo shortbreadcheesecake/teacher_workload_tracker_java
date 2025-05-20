@@ -1,0 +1,705 @@
+openapi: 3.0.0
+info:
+  title: Teacher Workload Tracker API
+  version: 1.0.0
+  description: API для модуля учёта выполненной нагрузки преподавателей
+servers:
+  - url: http://localhost:8080
+    description: Локальный сервер разработки
+paths:
+  /api/teachers:
+    get:
+      summary: Получение списка преподавателей
+      description: Возвращает список всех преподавателей
+      operationId: getAllTeachers
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TeacherDto'
+    post:
+      summary: Создание нового преподавателя
+      description: Создает нового преподавателя
+      operationId: createTeacher
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeacherDto'
+      responses:
+        '201':
+          description: Преподаватель успешно создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeacherDto'
+        '400':
+          description: Некорректные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  
+  /api/teachers/{id}:
+    get:
+      summary: Получение преподавателя по ID
+      description: Возвращает преподавателя по указанному ID
+      operationId: getTeacherById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeacherDto'
+        '404':
+          description: Преподаватель не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      summary: Обновление преподавателя
+      description: Обновляет данные преподавателя по указанному ID
+      operationId: updateTeacher
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeacherDto'
+      responses:
+        '200':
+          description: Преподаватель успешно обновлен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeacherDto'
+        '400':
+          description: Некорректные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Преподаватель не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      summary: Удаление преподавателя
+      description: Удаляет преподавателя по указанному ID
+      operationId: deleteTeacher
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Преподаватель успешно удален
+        '404':
+          description: Преподаватель не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  
+  /api/teachers/{id}/workloads:
+    get:
+      summary: Получение нагрузки преподавателя
+      description: Возвращает список нагрузок для преподавателя по указанному ID
+      operationId: getTeacherWorkloads
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WorkloadDto'
+        '404':
+          description: Преподаватель не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  
+  /api/teachers/{id}/schedule:
+    get:
+      summary: Получение расписания преподавателя
+      description: Возвращает расписание для преподавателя по указанному ID
+      operationId: getTeacherSchedule
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScheduleEventDto'
+        '404':
+          description: Преподаватель не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  
+  /api/workloads:
+    get:
+      summary: Получение списка нагрузок
+      description: Возвращает список всех нагрузок
+      operationId: getAllWorkloads
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WorkloadDto'
+    post:
+      summary: Создание новой нагрузки
+      description: Создает новую нагрузку
+      operationId: createWorkload
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkloadDto'
+      responses:
+        '201':
+          description: Нагрузка успешно создана
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkloadDto'
+        '400':
+          description: Некорректные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  
+  /api/workloads/{id}:
+    get:
+      summary: Получение нагрузки по ID
+      description: Возвращает нагрузку по указанному ID
+      operationId: getWorkloadById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkloadDto'
+        '404':
+          description: Нагрузка не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      summary: Обновление нагрузки
+      description: Обновляет данные нагрузки по указанному ID
+      operationId: updateWorkload
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkloadDto'
+      responses:
+        '200':
+          description: Нагрузка успешно обновлена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkloadDto'
+        '400':
+          description: Некорректные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Нагрузка не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      summary: Удаление нагрузки
+      description: Удаляет нагрузку по указанному ID
+      operationId: deleteWorkload
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Нагрузка успешно удалена
+        '404':
+          description: Нагрузка не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  
+  /api/schedule:
+    get:
+      summary: Получение списка событий расписания
+      description: Возвращает список всех событий расписания
+      operationId: getAllScheduleEvents
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScheduleEventDto'
+    post:
+      summary: Создание нового события расписания
+      description: Создает новое событие расписания
+      operationId: createScheduleEvent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScheduleEventDto'
+      responses:
+        '201':
+          description: Событие расписания успешно создано
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleEventDto'
+        '400':
+          description: Некорректные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  
+  /api/schedule/{id}:
+    get:
+      summary: Получение события расписания по ID
+      description: Возвращает событие расписания по указанному ID
+      operationId: getScheduleEventById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleEventDto'
+        '404':
+          description: Событие расписания не найдено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      summary: Обновление события расписания
+      description: Обновляет данные события расписания по указанному ID
+      operationId: updateScheduleEvent
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScheduleEventDto'
+      responses:
+        '200':
+          description: Событие расписания успешно обновлено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleEventDto'
+        '400':
+          description: Некорректные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Событие расписания не найдено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      summary: Удаление события расписания
+      description: Удаляет событие расписания по указанному ID
+      operationId: deleteScheduleEvent
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Событие расписания успешно удалено
+        '404':
+          description: Событие расписания не найдено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  
+  /api/schedule/{id}/complete:
+    post:
+      summary: Отметка события расписания как выполненного
+      description: Отмечает событие расписания как выполненное и уменьшает соответствующие часы нагрузки
+      operationId: completeScheduleEvent
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Событие расписания успешно отмечено как выполненное
+        '404':
+          description: Событие расписания не найдено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  
+  /api/schedule/{id}/cancel:
+    post:
+      summary: Отметка события расписания как отмененного
+      description: Отмечает событие расписания как отмененное без уменьшения часов нагрузки
+      operationId: cancelScheduleEvent
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Событие расписания успешно отмечено как отмененное
+        '404':
+          description: Событие расписания не найдено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  
+  /api/schedule/import/csv:
+    post:
+      summary: Импорт расписания из CSV
+      description: Импортирует расписание из CSV файла
+      operationId: importScheduleFromCsv
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Расписание успешно импортировано
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportResult'
+        '400':
+          description: Ошибка импорта
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  
+  /api/schedule/export/csv:
+    get:
+      summary: Экспорт расписания в CSV
+      description: Экспортирует расписание в CSV файл
+      operationId: exportScheduleToCsv
+      parameters:
+        - name: teacherId
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Расписание успешно экспортировано
+          content:
+            text/csv:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Преподаватель не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  
+  /api/schedule/export/ical:
+    get:
+      summary: Экспорт расписания в iCalendar
+      description: Экспортирует расписание в формат iCalendar
+      operationId: exportScheduleToIcal
+      parameters:
+        - name: teacherId
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Расписание успешно экспортировано
+          content:
+            text/calendar:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Преподаватель не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    TeacherDto:
+      type: object
+      required:
+        - name
+        - department
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Уникальный идентификатор преподавателя
+        name:
+          type: string
+          description: ФИО преподавателя
+        department:
+          type: string
+          description: Кафедра или отделение преподавателя
+    
+    WorkloadDto:
+      type: object
+      required:
+        - teacherId
+        - subject
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Уникальный идентификатор нагрузки
+        teacherId:
+          type: integer
+          format: int64
+          description: Идентификатор преподавателя
+        position:
+          type: string
+          description: Должность преподавателя
+        subject:
+          type: string
+          description: Название предмета
+        lectureHours:
+          type: integer
+          description: Количество часов лекций
+        seminarHours:
+          type: integer
+          description: Количество часов семинаров
+        labHours:
+          type: integer
+          description: Количество часов лабораторных работ
+        courseWorkHours:
+          type: integer
+          description: Количество часов курсовых работ
+        examHours:
+          type: integer
+          description: Количество часов экзаменов
+        totalHours:
+          type: integer
+          description: Общее количество часов
+        additionalDuties:
+          type: string
+          description: Дополнительные обязанности
+        semester:
+          type: string
+          description: Семестр
+        academicYear:
+          type: string
+          description: Учебный год
+        studentGroup:
+          type: string
+          description: Учебная группа
+    
+    ScheduleEventDto:
+      type: object
+      required:
+        - teacherId
+        - date
+        - startTime
+        - endTime
+        - subject
+        - lessonType
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Уникальный идентификатор события расписания
+        teacherId:
+          type: integer
+          format: int64
+          description: Идентификатор преподавателя
+        workloadId:
+          type: integer
+          format: int64
+          description: Идентификатор нагрузки
+        date:
+          type: string
+          format: date
+          description: Дата занятия
+        dayOfWeek:
+          type: string
+          description: День недели
+        startTime:
+          type: string
+          format: time
+          description: Время начала занятия
+        endTime:
+          type: string
+          format: time
+          description: Время окончания занятия
+        subject:
+          type: string
+          description: Название предмета
+        studentGroup:
+          type: string
+          description: Учебная группа
+        location:
+          type: string
+          description: Аудитория
+        lessonType:
+          type: string
+          description: Тип занятия
+        hours:
+          type: integer
+          description: Количество часов
+        completed:
+          type: boolean
+          description: Флаг выполнения занятия
+    
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Код ошибки
+        message:
+          type: string
+          description: Сообщение об ошибке
+    
+    ImportResult:
+      type: object
+      properties:
+        totalImported:
+          type: integer
+          description: Общее количество импортированных записей
+        successCount:
+          type: integer
+          description: Количество успешно импортированных записей
+        errorCount:
+          type: integer
+          description: Количество записей с ошибками
+        errors:
+          type: array
+          items:
+            type: string
+          description: Список ошибок импорта
